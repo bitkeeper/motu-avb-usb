@@ -175,7 +175,7 @@ static void set_samplerate(struct motu_avb *ua)
 
         data_buf = kmemdup(&data, sizeof(data), GFP_KERNEL);
 	if (!data_buf)
-		return;      
+		return;
 
 	err = usb_control_msg(ua->dev, usb_sndctrlpipe(ua->dev, 0), UAC2_CS_CUR,
 			      USB_TYPE_CLASS | USB_RECIP_INTERFACE | USB_DIR_OUT,
@@ -605,11 +605,11 @@ static int start_usb_capture(struct motu_avb *ua)
 
 	if (vendor)
 	{
-		enable_iso_interface(ua, INTF_VENDOR_IN);
+		err = enable_iso_interface(ua, INTF_VENDOR_IN);
 	}
 	else
 	{
-		enable_iso_interface(ua, INTF_CAPTURE);
+		err = enable_iso_interface(ua, INTF_CAPTURE);
 	}
 	if (err < 0)
 		return err;
@@ -682,11 +682,11 @@ static int start_usb_playback(struct motu_avb *ua)
 
 	if (vendor)
 	{
-		enable_iso_interface(ua, INTF_VENDOR_OUT);
+		err = enable_iso_interface(ua, INTF_VENDOR_OUT);
 	}
 	else
 	{
-		enable_iso_interface(ua, INTF_PLAYBACK);
+		err = enable_iso_interface(ua, INTF_PLAYBACK);
 	}
 	if (err < 0)
 		return err;
@@ -708,10 +708,10 @@ static int start_usb_playback(struct motu_avb *ua)
 		return -EIO;
 	}
 
-        // the very first urb must have the maximum number of frames 
+        // the very first urb must have the maximum number of frames
 
         spin_lock_irq(&ua->lock);
-       
+
         switch (ua->rate)
         {
         case 44100:
